@@ -49,35 +49,32 @@ func (userRepo *userRepositoryImpl) Save(user *model.User) (*model.User, error) 
 }
 
 func (userRepo *userRepositoryImpl) FindById(id string) (*model.User, error) {
-	users := userRepo.users
-	i, found := searchUserById(users, id)
+	i, found := searchUserById(userRepo.users, id)
 	if !found {
 		return nil, exception.ResourceNotFoundException("User", "id", id)
 	}
-	existUser := users[i]
+	existUser := userRepo.users[i]
 	return existUser, nil
 }
 
 func (userRepo *userRepositoryImpl) Update(id string, user *model.User) (*model.User, error) {
-	users := userRepo.users
-	i, found := searchUserById(users, id)
+	i, found := searchUserById(userRepo.users, id)
 	if !found {
 		return nil, exception.ResourceNotFoundException("User", "id", id)
 	}
-	existUser := users[i]
+	existUser := userRepo.users[i]
 	existUser.UserInput = user.UserInput
-	users[i] = existUser
+	userRepo.users[i] = existUser
 
 	return existUser, nil
 }
 
 func (userRepo *userRepositoryImpl) DeleteById(id string) error {
-	users := userRepo.users
-	i, found := searchUserById(users, id)
+	i, found := searchUserById(userRepo.users, id)
 	if !found {
 		return exception.ResourceNotFoundException("User", "id", id)
 	}
-	users = append(users[:i], users[i+1:]...)
+	userRepo.users = append(userRepo.users[:i], userRepo.users[i+1:]...)
 	return nil
 }
 
